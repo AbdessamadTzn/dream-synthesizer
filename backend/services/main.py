@@ -1,11 +1,13 @@
 from groq import Groq
 from mistralai import Mistral
 from dotenv import load_dotenv
+from pathlib import Path
 import os
 import json
 import math
 
 load_dotenv()
+
 
 def read_file(text_file_path):
 	with open(text_file_path, "r") as file:
@@ -38,32 +40,35 @@ def speach_to_text(audio_path, language="fr"):
 
 def text_analysis(text):
 
-	client = Mistral(api_key=os.environ["MISTRAL_API_KEY"])
+    client = Mistral(api_key=os.environ["MISTRAL_API_KEY"])
 
-	chat_response = client.chat.complete(
-		model="mistral-large-latest",
-		messages=[
-			{
-			"role": "system",
-			"content": read_file(text_file_path="context_analysis.txt")
-			},
-			{
-			"role": "user",
-			"content": f"Analyse le texte ci-dessous (ta réponse doit être dans le format JSON) : {text}",
-			},
-		],
-		response_format={"type": "json_object",}
-	)
+    # Build absolute path to context_analysis.txt
+    project_root = Path(__file__).parent.parent.parent
+    context_path = project_root / "backend" / "services" / "context_analysis.txt"
 
-
-	predictions = json.loads(chat_response.choices[0].message.content)
+    chat_response = client.chat.complete(
+        model="mistral-large-latest",
+        messages=[
+            {
+                "role": "system",
+                "content": read_file(text_file_path=str(context_path))
+            },
+            {
+                "role": "user",
+                "content": f"Analyse le texte ci-dessous (ta réponse doit être dans le format JSON) : {text}",
+            },
+        ],
+        response_format={"type": "json_object",}
+    )
 	
-	return softmax(predictions)
+    predictions = json.loads(chat_response.choices[0].message.content)
+    return softmax(predictions)
 
 if __name__ == "__main__":
-	audio_path = "../Enregistrement.m4a"
-	print("Extraction de texte")
-	text = speach_to_text(audio_path, language="fr")
-	print(f"Text extrait : {text}")
-	analysis = text_analysis(text)
-	print(analysis)
+    project_root = Path(__file__).parent.parent.parent
+    audio_path = project_root / "data/audio/samples/reve_heureux_01.mp3" 
+    print("Extraction de texte")
+    text = speach_to_text(audio_path, language="fr")
+    print(f"Text extrait : {text}")
+    analysis = text_analysis(text)
+    print(analysis)
