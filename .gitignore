@@ -1,2 +1,43 @@
 venv/
-backend/services/.env
+.venv/
+*.env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+data/audio/uploads/
+data/audio/temp/
+
+# Fichiers de configuration sensibles
+.env
+.env.*
+**/.env
+config/api_keys.py
+
+# Données sensibles
+data/audio/uploads/
+data/audio/temp/
+data/images/temp/
+logs/
+*.log
+
+# Base de données
+*.db
+*.sqlite
+
+# Fichiers temporaires
+.tmp/
+temp/
+*.tmp
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
