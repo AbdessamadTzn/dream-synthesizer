@@ -5,6 +5,7 @@ from pathlib import Path
 import os
 import json
 import math
+from image_generator import generate_from_main_output
 
 load_dotenv()
 
@@ -72,3 +73,6 @@ if __name__ == "__main__":
     print(f"Text extrait : {text}")
     analysis = text_analysis(text)
     print(analysis)
+    output_dir = project_root / "data/generated_images"
+    result = generate_from_main_output(text, analysis, output_dir)
+    print(result)
